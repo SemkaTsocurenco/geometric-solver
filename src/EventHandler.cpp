@@ -42,6 +42,13 @@ void EventHandler::handleMouseMoved(const sf::Event& event){
         sf::Vector2f cursorPosition(event.mouseMove.x, event.mouseMove.y);
         draw_mouse_line(mouseLine, selectedPoints, cursorPosition, buttons.DrawLineModeButton.getStaus());
         if (draggedPoint != nullptr) {
+            for (auto& line : lines) {
+                if (line.startPoint.position == draggedPoint->position)  {
+                    line.startPoint.position = cursorPosition;
+                } else if(line.endPoint.position == draggedPoint->position) {
+                    line.endPoint.position = cursorPosition;
+                }
+            }
             draggedPoint->position = cursorPosition;
         }
         
@@ -49,6 +56,7 @@ void EventHandler::handleMouseMoved(const sf::Event& event){
 
 void EventHandler::handleMousePress(const sf::Event& event) {
     sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+    sf::Vector2f cursorPosition(event.mouseMove.x, event.mouseMove.y);
 
     bool flagToggle = buttons.DrawLineModeButton.getStaus();
 
@@ -83,6 +91,8 @@ void EventHandler::handleMousePress(const sf::Event& event) {
         }
         return;
     }
+
+
     if (event.mouseButton.button == sf::Mouse::Left) {
         draw_point(points, selectedPoints, event);
 

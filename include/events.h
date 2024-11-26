@@ -41,7 +41,7 @@ void draw_mouse_line(Line& mouseLine, std::vector<Point>& selectedPoints, sf::Ve
 }
 
 
-void move_Point(std::vector<Point>& points, Point* draggedPoint, const sf::Event& event ){
+void move_Point(std::vector<Point>& points, std::vector<Line>& lines, Point* draggedPoint, const sf::Event& event ){
     sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
     for (auto& point : points) {
         if ((std::abs(mousePos.x - point.position.x) <= 8) &&
@@ -50,4 +50,6 @@ void move_Point(std::vector<Point>& points, Point* draggedPoint, const sf::Event
             return;
         }
     }
+
+    // for (auto& Line : lines)
 }
