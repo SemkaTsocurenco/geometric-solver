@@ -35,7 +35,6 @@ public:
     void handleClick(sf::Vector2f mousePos) override;
 
     bool getStaus();
-private:
     bool isActive;  // Флаг, показывающий активен ли статус кнопки
 };
 
@@ -49,8 +48,8 @@ public:
     void setPressed(bool isPressed);
 
     bool getStaus();
-private:
     bool isClicked;  // Флаг, показывающий, была ли кнопка нажата
+
 };
 
 

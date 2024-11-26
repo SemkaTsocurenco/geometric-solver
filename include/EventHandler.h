@@ -25,9 +25,11 @@ private:
 
 
 public:
-    EventHandler(std::vector<Point>& points, std::vector<Point*>& selectedPoints, std::vector<Line>& lines,
+    EventHandler(std::vector<Point>& points,
+                 std::vector<Point*>& selectedPoints,
+                 std::vector<Line>& lines,
                  Buttons buttons, Line& mouseLine);
-
+                 
     void processEvent(const sf::Event& event, sf::RenderWindow& window);
     Buttons buttons;
     std::vector<Point> startLine = {Point(0,0), Point(0,0)};
