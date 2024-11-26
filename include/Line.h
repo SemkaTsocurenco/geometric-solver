@@ -17,4 +17,5 @@ public:
         line[1].color = sf::Color::Black;
         window.draw(line);
     }
+
 };

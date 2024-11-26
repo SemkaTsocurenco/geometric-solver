@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 
+
+
 // Базовый класс для кнопок
 class Button {
 public:
@@ -44,10 +46,18 @@ public:
     
     // Реализация обработки клика
     void handleClick(sf::Vector2f mousePos) override;
+    void setPressed(bool isPressed);
 
     bool getStaus();
 private:
     bool isClicked;  // Флаг, показывающий, была ли кнопка нажата
+};
+
+
+struct Buttons {
+    ToggleButton&  DrawLineModeButton;
+    ToggleButton&  MovePointModeButton;
+    ClickButton& DrawLineButton;
 };
 
 #endif // BUTTON_HPP

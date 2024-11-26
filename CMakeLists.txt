@@ -10,6 +10,7 @@ set(CMAKE_CXX_STANDARD 17)
 # Указываем путь к папке с исходными файлами
 set(SOURCES main.cpp
         ./src/Button.cpp
+        ./src/EventHandler.cpp
 )
 
 # Указываем пути к библиотекам SFML
