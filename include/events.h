@@ -53,3 +53,27 @@ void move_Point(std::vector<Point>& points, std::vector<Line>& lines, Point* dra
 
     // for (auto& Line : lines)
 }
+
+Line* MovableLine( std::vector<Line>& lines, const sf::Event& event){
+
+    int i = 0;
+    sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
+    for (auto& line : lines){
+        i++;
+        float dx = line.endPoint.position.x - line.startPoint.position.x;
+        float dy = line.endPoint.position.y - line.startPoint.position.y;
+        // Вычисляем расстояние от точки до линии
+        float numerator = std::abs(dy * mousePos.x - dx * mousePos.y + line.endPoint.position.x * line.startPoint.position.y - line.endPoint.position.y * line.startPoint.position.x);
+        float denominator = std::sqrt(dx * dx + dy * dy);
+        float distance = numerator / denominator;
+        std::cout<<"line "<< i <<"  " << distance << "\n";
+        // Проверяем, находится ли точка в пределах толщины линии
+        if (distance <= 10) {
+            // // Проверим, находится ли мышь между точками линии
+            float dot1 = (mousePos.x - line.startPoint.position.x) * dx + (mousePos.y - line.startPoint.position.y) * dy;
+            float dot2 = (mousePos.x - line.endPoint.position.x) * -dx + (mousePos.y - line.endPoint.position.y) * -dy;
+            if (dot1 >= 0 && dot2 >= 0) return &line;
+        }
+    }
+    return nullptr;
+}

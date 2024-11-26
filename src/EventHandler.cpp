@@ -36,12 +36,17 @@ void EventHandler::handleMouseRealise(const sf::Event& event){
         if (event.mouseButton.button == sf::Mouse::Left) {
             draggedPoint = nullptr;
         }
+        if (event.mouseButton.button == sf::Mouse::Left) {
+            dragLine = nullptr;
+        }
+
+
 }
 
 void EventHandler::handleMouseMoved(const sf::Event& event){
         sf::Vector2f cursorPosition(event.mouseMove.x, event.mouseMove.y);
         draw_mouse_line(mouseLine, selectedPoints, cursorPosition, buttons.DrawLineModeButton.getStaus());
-        if (draggedPoint != nullptr) {
+        if (draggedPoint != nullptr && buttons.MovePointModeButton.getStaus()) {
             for (auto& line : lines) {
                 if (line.startPoint.position == draggedPoint->position)  {
                     line.startPoint.position = cursorPosition;
@@ -51,7 +56,16 @@ void EventHandler::handleMouseMoved(const sf::Event& event){
             }
             draggedPoint->position = cursorPosition;
         }
-        
+
+        if (dragLine != nullptr && buttons.MoveLineModeButton.getStaus()) {
+            sf::Vector2f offset = cursorPosition - draggedPoint->position; // Вычисляем смещение
+            std::cout<<offset.x << ", "<<offset.y<<"\n\n";
+            dragLine->startPoint.position = startLine.startPoint.position + offset;
+            dragLine->endPoint.position = startLine.endPoint.position + offset;
+            
+            draggedPointLineStart->position = dragLine->startPoint.position;
+            draggedPointLineEnd->position = dragLine->endPoint.position;
+        }
 }
 
 void EventHandler::handleMousePress(const sf::Event& event) {
@@ -62,6 +76,8 @@ void EventHandler::handleMousePress(const sf::Event& event) {
 
     buttons.DrawLineModeButton.handleClick(mousePos);
     buttons.MovePointModeButton.handleClick(mousePos);
+    buttons.MoveLineModeButton.handleClick(mousePos);
+
 
     buttons.DrawLineButton.handleClick(mousePos);
 
@@ -92,6 +108,29 @@ void EventHandler::handleMousePress(const sf::Event& event) {
         return;
     }
 
+    if (buttons.MoveLineModeButton.getStaus()){
+        selectedPoints = {};
+        dragLine = MovableLine(lines, event);
+        if (dragLine != nullptr){
+            startLine.startPoint = dragLine->startPoint;
+            startLine.endPoint = dragLine->endPoint;
+            draggedPoint = new Point(0,0);
+            draggedPoint->position = mousePos;
+
+            for (auto& point : points){
+                if (dragLine->startPoint.position == point.position){
+                    draggedPointLineStart =  &point;
+                } 
+                if (dragLine->endPoint.position == point.position){
+                    draggedPointLineEnd =  &point;
+                } 
+            }        
+        }
+        
+        return;
+    }
+
+
 
     if (event.mouseButton.button == sf::Mouse::Left) {
         draw_point(points, selectedPoints, event);
@@ -102,15 +141,19 @@ void EventHandler::handleMousePress(const sf::Event& event) {
     if (buttons.DrawLineModeButton.getStaus()) {
         draw_line(lines, selectedPoints, false);
     }
-
-
 }
+
+
+
 
 void EventHandler::handleKeyboardPress(const sf::Event& event) {
     if (event.key.code == sf::Keyboard::C) {
         // Implement constraint handling or other functionality here
     }
 }
+
+
+
 
 void EventHandler::handleWindowClose(const sf::Event& event, sf::RenderWindow& window) {
     window.close();

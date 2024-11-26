@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <iostream>
-
+#include <cmath>
 #include "../include/Point.h"
 #include "../include/Line.h"
 #include "../include/Constraint.h"
@@ -18,6 +18,11 @@ private:
     std::vector<Line>& lines;
     Line& mouseLine;
     Point* draggedPoint = nullptr; // Указатель на перетаскиваемую точку
+    Point* draggedPointLineStart = nullptr; // Указатель на перетаскиваемую точку
+    Point* draggedPointLineEnd = nullptr; // Указатель на перетаскиваемую точку
+
+    Line* dragLine = nullptr;
+
 
 public:
     EventHandler(std::vector<Point>& points, std::vector<Point>& selectedPoints, std::vector<Line>& lines,
@@ -25,6 +30,8 @@ public:
 
     void processEvent(const sf::Event& event, sf::RenderWindow& window);
     Buttons buttons;
+    Line startLine = Line (Point(0,0), Point(0,0));
+
 
 private:
     

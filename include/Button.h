@@ -57,6 +57,7 @@ private:
 struct Buttons {
     ToggleButton&  DrawLineModeButton;
     ToggleButton&  MovePointModeButton;
+    ToggleButton&  MoveLineModeButton;
     ClickButton& DrawLineButton;
 };
 
