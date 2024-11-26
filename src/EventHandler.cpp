@@ -2,7 +2,7 @@
 #include "../include/events.h"
 
 
-EventHandler::EventHandler(std::vector<Point>& points, std::vector<Point>& selectedPoints, std::vector<Line>& lines,
+EventHandler::EventHandler(std::vector<Point>& points, std::vector<Point*>& selectedPoints, std::vector<Line>& lines,
                  Buttons buttons, Line& mouseLine)
     : points(points), selectedPoints(selectedPoints), lines(lines), buttons(buttons), mouseLine(mouseLine){}
 
@@ -48,10 +48,10 @@ void EventHandler::handleMouseMoved(const sf::Event& event){
         draw_mouse_line(mouseLine, selectedPoints, cursorPosition, buttons.DrawLineModeButton.getStaus());
         if (draggedPoint != nullptr && buttons.MovePointModeButton.getStaus()) {
             for (auto& line : lines) {
-                if (line.startPoint.position == draggedPoint->position)  {
-                    line.startPoint.position = cursorPosition;
-                } else if(line.endPoint.position == draggedPoint->position) {
-                    line.endPoint.position = cursorPosition;
+                if (line.startPoint->position == draggedPoint->position)  {
+                    line.startPoint->position = cursorPosition;
+                } else if(line.endPoint->position == draggedPoint->position) {
+                    line.endPoint->position = cursorPosition;
                 }
             }
             draggedPoint->position = cursorPosition;
@@ -59,12 +59,11 @@ void EventHandler::handleMouseMoved(const sf::Event& event){
 
         if (dragLine != nullptr && buttons.MoveLineModeButton.getStaus()) {
             sf::Vector2f offset = cursorPosition - draggedPoint->position; // Вычисляем смещение
-            std::cout<<offset.x << ", "<<offset.y<<"\n\n";
-            dragLine->startPoint.position = startLine.startPoint.position + offset;
-            dragLine->endPoint.position = startLine.endPoint.position + offset;
-            
-            draggedPointLineStart->position = dragLine->startPoint.position;
-            draggedPointLineEnd->position = dragLine->endPoint.position;
+            dragLine->startPoint->position = startLine[0].position + offset;
+            dragLine->endPoint->position = startLine[1].position + offset;
+        
+            draggedPointLineStart->position = dragLine->startPoint->position;
+            draggedPointLineEnd->position = dragLine->endPoint->position;
         }
 }
 
@@ -88,16 +87,16 @@ void EventHandler::handleMousePress(const sf::Event& event) {
     // Проверка нажатия на ClickButton
     if (buttons.DrawLineButton.getStaus()) {
         buttons.DrawLineButton.setPressed(true);
-        draw_line(lines, selectedPoints, true);
+        draw_line(lines, selectedPoints, false);
         return;
     }
+
 
     // Сбрасываем состояние кнопки
     buttons.DrawLineButton.setPressed(false);
 
     // Если включен режим перемещения точек
     if (buttons.MovePointModeButton.getStaus()) {
-        selectedPoints = {};
         for (auto& point : points) {
             if ((std::abs(mousePos.x - point.position.x) <= 8) &&
                 (std::abs(mousePos.y - point.position.y) <= 8)) {
@@ -109,19 +108,18 @@ void EventHandler::handleMousePress(const sf::Event& event) {
     }
 
     if (buttons.MoveLineModeButton.getStaus()){
-        selectedPoints = {};
         dragLine = MovableLine(lines, event);
         if (dragLine != nullptr){
-            startLine.startPoint = dragLine->startPoint;
-            startLine.endPoint = dragLine->endPoint;
+            startLine[0] = *dragLine->startPoint;
+            startLine[1] = *dragLine->endPoint;
             draggedPoint = new Point(0,0);
             draggedPoint->position = mousePos;
 
             for (auto& point : points){
-                if (dragLine->startPoint.position == point.position){
+                if (dragLine->startPoint->position == point.position){
                     draggedPointLineStart =  &point;
                 } 
-                if (dragLine->endPoint.position == point.position){
+                if (dragLine->endPoint->position == point.position){
                     draggedPointLineEnd =  &point;
                 } 
             }        
