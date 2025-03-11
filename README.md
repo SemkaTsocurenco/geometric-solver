@@ -31,4 +31,4 @@
 ![изображение](https://github.com/user-attachments/assets/f88107f2-1d73-4091-8ed7-56cf8414e74f)
 
 # Запуск проекта 
-> `python3 ./run.sh`
+> `python3 ./main.py
